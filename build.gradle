@@ -2,8 +2,9 @@ group 'me.carlosribeiro'
 version '1.0.0-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'eclipse'
 
-sourceCompatibility = 1.5
+sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()

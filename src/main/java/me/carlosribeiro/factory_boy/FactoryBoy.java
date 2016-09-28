@@ -1,27 +1,37 @@
 package me.carlosribeiro.factory_boy;
 
 import java.lang.reflect.Field;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FactoryBoy {
-    public static <E> E create(E model, BaseFactory factory) {
-        //TODO: try to make this shit better
-        FactoryBuilder builder = factory.buildFactory(new FactoryBuilder());
-        try {
-            model = (E) factory.buildObject(builder).cast(model);
-            for (Map.Entry<String, Object> entry: builder.getAttributesMap().entrySet()) {
-                Field field = model.getClass().getDeclaredField(entry.getKey());
-                field.setAccessible(true);
-                field.set(model, entry.getValue());
-            }
-        //TODO: think in what to do when this exceptions occurs. (maybe throw it up)
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return model;
+  public static <E> E create(E model, BaseFactory factory) {
+    // TODO: try to make this shit better
+    FactoryBuilder builder = factory.buildFactory(new FactoryBuilder());
+    
+    builder.getAttributesMap().forEach((key, value) -> {
+      try {
+        Field field = model.getClass().getDeclaredField(key);
+        field.setAccessible(true);
+        field.set(model, value);
+      } catch (NoSuchFieldException | IllegalAccessException e) {
+        e.printStackTrace();
+        throw new RuntimeException(e);
+      }
+    });
+    
+    return model;
+  }
+  
+  
+  public static <E> List<E> createList(E model, BaseFactory factory, Integer quantity) {
+    List<E> result = new ArrayList<E>();
+    
+    for (int i = 0; i < quantity; i++) {
+      result.add(create(model, factory));
     }
+    
+    return result;
+  }
+  
 }
