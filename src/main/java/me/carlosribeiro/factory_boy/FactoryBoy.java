@@ -27,8 +27,9 @@ public class FactoryBoy {
   public static <E> List<E> createList(E model, BaseFactory factory, Integer quantity) {
     List<E> result = new ArrayList<E>();
     
-    for (int i = 0; i < quantity; i++)
+    for (int i = 0; i < quantity; i++) {
       result.add(create(model, factory));
+    }
     
     return result;
   }
